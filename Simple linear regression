@@ -144,3 +144,5 @@ b2_hat <- coef(mod_6)[[2]]
 mod_6_summary <- summary(mod_6)
 coef(mod_6_summary)
 seb2_hat <- coef(mod_6_summary)[2, 2]
+
+# enjoy!!!

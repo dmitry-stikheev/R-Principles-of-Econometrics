@@ -135,3 +135,5 @@ low_bL <- L - tc*se_L
 upp_bL <- L + tc*se_L
 low_bL
 upp_bL
+
+# enjoy!!!

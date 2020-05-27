@@ -9,6 +9,7 @@ library(broom) #for tidy lm output and function glance()
 library(stats)
 library(dplyr)
 
+
 ## Testing Simultaneous Hypotheses
 data("andy")
 
@@ -52,6 +53,7 @@ var_x2 <- var(edu_inc$he)
 bias_b2 <- b3*(cov_x2x3 / var_x2)
 bias_b21 <- coef(mod2)[[2]] - coef(mod1)[[2]] # alternative approach
 
+
 ## Irrelevant variables
 data("edu_inc")
 
@@ -85,7 +87,7 @@ rownames(selection_criteria) <- c("he","he, we","he, we, kl6",
 colnames(selection_criteria) <- c("Rsq", "Adj Rsq", "AIC", "BIC")
 selection_criteria
 
-# Alternative way of attaining criteria
+# Alternative way of extraction criteria
 library(stats)
 smod1 <- summary(mod1)
 
@@ -94,3 +96,57 @@ AdjRsq <- smod1$adj.r.squared
 aic <- AIC(mod1)
 bic <- BIC(mod1)
 criteria <- c(Rsq, AdjRsq, aic, bic)
+
+
+## RESET Test
+mod3 <- lm(faminc ~ he + we + kl6, data = edu_inc)
+
+resettest(mod3, power = 2, type = "fitted")
+resettest(mod3, power = 2:3, type = "fitted")
+
+
+## Collinearity
+data("cars", package = "PoEdata")
+
+mod1 <- lm(mpg ~ cyl, data = cars)
+m1 <- coef(summary(mod1))
+
+mod2 <- lm(mpg ~ cyl + eng + wgt, data = cars)
+m2 <- coef(summary(mod2))
+comparison <- rbind(m1, m2)
+comparison
+
+
+## Variance Inflation Factor (VIF)
+mod2 <- lm(mpg ~ cyl + eng + wgt, data = cars) # soecifying the model
+
+# Setting up artificial models
+art1 <- lm(cyl ~ eng + wgt, data = cars)
+art2 <- lm(eng ~ cyl + wgt, data = cars)
+art3 <- lm(wgt ~ cyl + eng, data = cars)
+sart1 <- summary(art1)
+sart2 <- summary(art2)
+sart3<- summary(art3)
+
+# Extracting R squared values
+Rsq1 <- sart1$r.squared
+Rsq2 <- sart2$r.squared
+Rsq3 <- sart3$r.squared
+
+# Computing VIF
+vif_cyl <- 1 / (1 - Rsq1)
+vif_eng <- 1 / (1 - Rsq2)
+vif_wgt <- 1 / (1 - Rsq3)
+
+# Alternative way through the "car" library
+vif_mod2 <- vif(mod2)
+
+
+## Prediction
+data("andy")
+mod3 <- lm(sales ~ price + advert + I(advert^2), data = andy)
+predpoint <- data.frame(price = 6, advert = 1.9)
+predict(mod3, newdata = predpoint, interval = "prediction")
+
+
+## ENJOY!!!

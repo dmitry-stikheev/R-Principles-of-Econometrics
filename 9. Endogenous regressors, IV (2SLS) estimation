@@ -1,6 +1,5 @@
 library(AER) #for `ivreg()`
 library(lmtest) #for `coeftest()` and `bptest()`.
-
 library(PoEdata) #for PoE4 datasets
 library(car) #for `hccm()` robust standard errors
 library(sandwich)
